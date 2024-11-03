@@ -1,0 +1,50 @@
+import os
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+import tensorflow as tf
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.preprocessing import PowerTransformer
+from imblearn.over_sampling import RandomOverSampler
+from collections import Counter
+from sklearn.metrics import confusion_matrix,classification_report
+
+# Load dataset
+df = pd.read_csv('/content/creditcard.csv')
+
+# Check class distribution
+classes = df['Class'].value_counts()
+print(classes)
+
+# Calculate percentage shares of normal and fraud transactions
+normal_share = round((classes[0] / df['Class'].count() * 100), 2)
+fraud_share = round((classes[1] / df['Class'].count() * 100), 2)
+print("Normal share =", normal_share)
+print("Fraud share =", fraud_share)
+
+# Plot class distribution
+sns.countplot(x='Class', data=df)
+plt.title('Number of fraudulent vs non-fraudulent transactions')
+plt.show()
+
+
+# Separate fraudulent and non-fraudulent transactions
+data_fraud = df[df['Class'] == 1]
+data_non_fraud = df[df['Class'] == 0]
+
+# Plot distribution of transaction amounts
+plt.figure(figsize=(8, 5))
+sns.kdeplot(data_fraud['Amount'], label='Fraudulent', fill=True)
+sns.kdeplot(data_non_fraud['Amount'], label='Non-Fraudulent', fill=True)
+plt.xlabel('Transaction Amount')
+plt.legend()
+plt.show()
+
+
+# Define features (X) and target (y)
+X = df.drop(['Class'], axis=1)
+y = df['Class']
+
+# Split data into train and test sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, train_size=0.8, test_size=0.2, random_state=100)
