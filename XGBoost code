@@ -1,0 +1,21 @@
+import xgboost as xgb
+
+# Define and train XGBoost model
+xgb_model = xgb.XGBClassifier(objective='binary:logistic', eval_metric='logloss')
+xgb_model.fit(X_train_ros, y_train_ros)
+
+from sklearn.metrics import accuracy_score
+
+# Predict on test set and evaluate
+y_pred_test_xgb = xgb_model.predict(X_test)
+
+# Calculate test accuracy
+accuracy_xgb = accuracy_score(y_test, y_pred_test_xgb)
+print("Test Accuracy (XGBoost):", accuracy_xgb)
+
+# Confusion Matrix and Classification Report
+conf_matrix_xgb = confusion_matrix(y_test, y_pred_test_xgb)
+class_report_xgb = classification_report(y_test, y_pred_test_xgb)
+
+print("Confusion Matrix (XGBoost):\n", conf_matrix_xgb)
+print("Classification Report (XGBoost):\n", class_report_xgb)
